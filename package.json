@@ -1,0 +1,32 @@
+{
+  "name": "liri-node-app",
+  "version": "1.0.0",
+  "description": "UCI Coding Bootcamp Week 10 HW",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chzwzrd/LIRI-Node-App.git"
+  },
+  "keywords": [
+    "liri",
+    "node",
+    "twitter",
+    "spotify",
+    "axios"
+  ],
+  "author": "chzwzrd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chzwzrd/LIRI-Node-App/issues"
+  },
+  "homepage": "https://github.com/chzwzrd/LIRI-Node-App#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "node-spotify-api": "^1.0.7",
+    "twitter": "^1.7.1"
+  }
+}
