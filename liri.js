@@ -38,7 +38,7 @@ var userCommand = process.argv[2];
 function requestTwitter() {
     // request last 20 tweets from my twitter account
     // syntax: twitter.get(path, params, callback);
-    twitter.get('statuses/user_timeline', { count: 20 }, function (error, tweets, response) {
+    twitter.get('statuses/user_timeline', { count: 20 }, function(error, tweets, response) {
 
         // error handling
         if (error) throw error;
@@ -52,11 +52,18 @@ function requestTwitter() {
     });
 }
 
-function logSpotify(dataObject) {
-    console.log("Song: " + dataObject.tracks.items[0].name);
-    console.log("Artist: " + dataObject.tracks.items[0].artists[0].name);
-    console.log("Album: " + dataObject.tracks.items[0].album.name);
-    console.log("Preview link: " + dataObject.tracks.items[0].preview_url);
+function querySpotify(q) {
+
+    // use default or user's argument to query song from Spotify
+    spotify.search({ type: 'track', query: q, limit: 1 }, function(error, data) {
+
+        // error handling
+        if (error) throw error;
+
+        // log out relevant info for song
+        logSpotify(data);
+
+    });
 }
 
 function requestSpotify(arg) {
@@ -64,30 +71,57 @@ function requestSpotify(arg) {
     if (!arg) {
 
         // GET request for 'The Sign' by Ace of Base
-        spotify.search({ type: 'track', query: 'The Sign%20Ace%20of%20Base', limit: 1 }, function (error, data) {
-
-            // error handling
-            if (error) throw error;
-
-            // log out relevant info for song
-            logSpotify(data);
-
-    });
+        querySpotify("The Sign Ace of Base");
 
     // if user provides song argument
     } else {
 
         // use song as query in GET request
-        spotify.search({ type: 'track', query: arg, limit: 1 }, function (error, data) {
-
-            // error handling
-            if (error) throw error;
-
-            // log out relevant info for user's song
-            logSpotify(data);
-
-        });
+        querySpotify(arg);
+        
     }
+}
+
+function logSpotify(dataObject) {
+    console.log("Song: " + dataObject.tracks.items[0].name);
+    console.log("Artist: " + dataObject.tracks.items[0].artists[0].name);
+    console.log("Album: " + dataObject.tracks.items[0].album.name);
+    console.log("Preview link: " + dataObject.tracks.items[0].preview_url);
+}
+
+function queryOMDB(q) {
+
+    // use default or user's argument to query movie from OMDB
+    axios({
+        method: 'get',
+        url: 'http://www.omdbapi.com/?apikey=40e9cece&t=' + q + '&type=movie&r=json'
+    })
+        // log out relevant info
+        .then(function(response) {
+            logOMDB(response);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
+}
+
+function requestOMDB(arg) {
+
+    // if no argument provided
+    if (!arg) {
+
+        // axios GET request for 'Mr. Nobody'
+        queryOMDB("Mr. Nobody");
+
+    // if user provides movie argument
+    } else {
+
+        // use movie as query in GET request
+        queryOMDB(arg);
+
+    }
+
 }
 
 function logOMDB(responseObject) {
@@ -102,40 +136,43 @@ function logOMDB(responseObject) {
     console.log("Actors: " + responseObject.data.Actors);
 }
 
-function requestOMDB(arg) {
-    // if no argument provided
-    if (!arg) {
+function readFile(file) {
 
-        // axios GET request for 'Mr. Nobody'
-        axios({
-            method: 'get',
-            url: 'http://www.omdbapi.com/?apikey=40e9cece&t=Mr%20Nobody&type=movie&r=json'
-        })
-            // log out relevant info
-            .then(function(response) {
-                logOMDB(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+    // read file & parse data
+    fs.readFile(file, 'utf8', function(error, data) {
 
-    // if user provides movie argument
-    } else {
+        // make data into array
+        var fileArray = data.split(',');
 
-        // use movie as query in GET request
-        axios({
-            method: 'get',
-            url: 'http://www.omdbapi.com/?apikey=40e9cece&t=' + arg + '&type=movie&r=json'
-        })
-            // log out relevant info
-            .then(function(response) {
-                logOMDB(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        // capture command
+        var fileCommand = fileArray[0];
 
-    }
+        // if query exists, capture query & remove quotes
+        if (!fileArray[1]) {
+            return;
+        } else {
+            var fileArgument = fileArray[1];
+            fileArgument = fileArgument.slice(1, fileArgument.length - 1);
+            console.log(fileCommand + ": " + fileArgument);
+        }
+
+        // based on command, execute appropriate action
+        if (error) {
+            throw error;
+        } else if (fileCommand === "spotify-this-song") {
+            requestSpotify(fileArgument);
+        } else if (fileCommand === "movie-this") {
+            requestOMDB(fileArgument);
+        } else if (fileCommand === "my-tweets") {
+            requestTwitter();
+        } else if (fileCommand === "do-what-it-says") {
+            console.log("Too deep!");
+        } else {
+            console.log("Sorry, command not found");
+        }
+        // executeCommands(fileCommand, fileArgument);
+    });
+
 }
 
 function executeCommands(command, argument) {
@@ -148,12 +185,12 @@ function executeCommands(command, argument) {
 
             requestTwitter();
 
-            // if Spotify command    
+        // if Spotify command    
         } else if (command === "spotify-this-song") {
 
             requestSpotify(argument);
 
-            // if OMDB command
+        // if OMDB command
         } else if (command === "movie-this") {
 
             requestOMDB(argument);
@@ -162,13 +199,7 @@ function executeCommands(command, argument) {
         } else if (command === "do-what-it-says") {
 
             // use file content to execute appropriate command
-            fs.readFile('./random.txt', 'utf8', function (error, data) {
-                if (error) throw error;
-                var fileArray = data.split(',');
-                var fileCommand = fileArray[0];
-                var fileArgument = fileArray[1];
-                executeCommands(fileCommand, fileArgument);
-            });
+            readFile('./random.txt');
 
         }
 
@@ -182,3 +213,35 @@ function executeCommands(command, argument) {
 // MAIN PROCESS
 // ====================================================================================
 executeCommands(userCommand, process.argv[3]);
+
+// // conditions to validate command and execute appropriate actions
+// // if the user's argument is an actionable command
+// if (commandArray.includes(userCommand)) {
+
+//     // if Twitter command
+//     if (userCommand === "my-tweets") {
+
+//         requestTwitter();
+
+//     // if Spotify command    
+//     } else if (userCommand === "spotify-this-song") {
+
+//         requestSpotify(process.argv[3]);
+
+//     // if OMDB command
+//     } else if (userCommand === "movie-this") {
+
+//         requestOMDB(process.argv[3]);
+
+//     // if File System command
+//     } else if (userCommand === "do-what-it-says") {
+
+//         // use file content to execute appropriate command
+//         readFile('./random.txt');
+
+//     }
+
+// // if user's argument is not an actionable command
+// } else {
+//     console.log("Command not found ):");
+// }
