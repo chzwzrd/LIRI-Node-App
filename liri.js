@@ -5,6 +5,7 @@ var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
 var fs = require('fs');
+// var prependFile = require('prepend-file');
 
 // get access to API keys for Twitter & Spotify stored in keys.js
 var allKeys = require('./keys');
@@ -31,6 +32,9 @@ var commandArray = [
 
 // store user's command argument into variable
 var userCommand = process.argv[2];
+var userArgument = process.argv[3];
+var commandFile = './random.txt';
+var logFile = './log.txt';
 
 
 // FUNCTIONS
@@ -43,13 +47,31 @@ function requestTwitter() {
         // error handling
         if (error) throw error;
 
+        // create array to push each tweet to
+        var tweetsArr = [];
+
         // for each tweet in the response object
         for (var i = 0; i < tweets.length; i++) {
 
-            // log out tweet content & when tweet was posted
-            console.log("@bootcamp_wz tweeted: " + tweets[i].text + " on " + tweets[i].created_at);
+            // push each tweet content & when tweet was posted to array
+            tweetsArr.push(`\t@bootcamp_wz tweeted: ${tweets[i].text} on ${tweets[i].created_at}`);
+
         }
+
+        // join array by newline & log out
+        var tweetsDisplay = tweetsArr.join('\n');
+        console.log(tweetsDisplay);
+
+        // output response to external file
+        var logTwitter = 
+            `Command: my-tweets\n` +
+            `Response:\n${tweetsDisplay}\n` +
+            `\n--------------------------------------\n\n`;
+        outputData(logFile, logTwitter);
+        console.log('---------------\nlog.txt updated!\n---------------\n');
+
     });
+    
 }
 
 function querySpotify(q) {
@@ -83,10 +105,28 @@ function requestSpotify(arg) {
 }
 
 function logSpotify(dataObject) {
-    console.log("Song: " + dataObject.tracks.items[0].name);
-    console.log("Artist: " + dataObject.tracks.items[0].artists[0].name);
-    console.log("Album: " + dataObject.tracks.items[0].album.name);
-    console.log("Preview link: " + dataObject.tracks.items[0].preview_url);
+
+    // create array to push all song info to
+    var spotifyArr = [
+        "\tSong: " + dataObject.tracks.items[0].name,
+        "\tArtist: " + dataObject.tracks.items[0].artists[0].name,
+        "\tAlbum: " + dataObject.tracks.items[0].album.name,
+        "\tPreview link: " + dataObject.tracks.items[0].preview_url
+    ];
+
+    // join array by newline & log out
+    var spotifyDisplay = spotifyArr.join('\n');
+    console.log(spotifyDisplay);
+
+    // output data response to external file
+    var logSpotify = 
+        `Command: spotify-this-song\n` +
+        `Query: ${userArgument}\n` +
+        `Response:\n${spotifyDisplay}\n` +
+        `\n--------------------------------------\n\n`;
+    outputData(logFile, logSpotify);
+    console.log('---------------\nlog.txt updated!\n---------------\n');
+
 }
 
 function queryOMDB(q) {
@@ -125,18 +165,35 @@ function requestOMDB(arg) {
 }
 
 function logOMDB(responseObject) {
-    console.log("Title: " + responseObject.data.Title);
-    console.log("Year: " + responseObject.data.Year);
-    console.log("Rated: " + responseObject.data.Rated);
-    console.log("IMDB Rating: " + responseObject.data.Ratings[0].Value);
-    console.log("Rotten Tomatoes Rating: " + responseObject.data.Ratings[1].Value);
-    console.log("Countries of Production: " + responseObject.data.Country);
-    console.log("Language: " + responseObject.data.Language);
-    console.log("Plot: " + responseObject.data.Plot);
-    console.log("Actors: " + responseObject.data.Actors);
+    // create array to push all song info to
+    var omdbArr = [
+        "\tTitle: " + responseObject.data.Title,
+        "\tYear: " + responseObject.data.Year,
+        "\tRated: " + responseObject.data.Rated,
+        "\tIMDB Rating: " + responseObject.data.Ratings[0].Value,
+        "\tRotten Tomatoes Rating: " + responseObject.data.Ratings[1].Value,
+        "\tCountries of Production: " + responseObject.data.Country,
+        "\tLanguage: " + responseObject.data.Language,
+        "\tPlot: " + responseObject.data.Plot,
+        "\tActors: " + responseObject.data.Actors
+    ];
+
+    // join array by newline & log out
+    var omdbDisplay = omdbArr.join('\n');
+    console.log(omdbDisplay);
+
+    // output data response to external file
+    var logOMDB =
+        `Command: movie-this\n` +
+        `Query: ${userArgument}\n` +
+        `Response:\n${omdbDisplay}\n` +
+        `\n--------------------------------------\n\n`;
+    outputData(logFile, logOMDB);
+    console.log('---------------\nlog.txt updated!\n---------------\n');
+   
 }
 
-function readFile(file) {
+function metaCommand(file) {
 
     // read file & parse data
     fs.readFile(file, 'utf8', function(error, data) {
@@ -144,35 +201,75 @@ function readFile(file) {
         // make data into array
         var fileArray = data.split(',');
 
-        // capture command
+        // capture the command used in the file
         var fileCommand = fileArray[0];
 
-        // if query exists, capture query & remove quotes
-        if (!fileArray[1]) {
-            return;
-        } else {
+        // if a query is included in the file
+        if (fileArray[1]) {
+
+            // capture query
             var fileArgument = fileArray[1];
+
+            // remove surrounding quotes
             fileArgument = fileArgument.slice(1, fileArgument.length - 1);
-            console.log(fileCommand + ": " + fileArgument);
+
+            // log out the command + query
+            console.log(`${fileCommand}: ${fileArgument}`);
+
+        } else {
+            return;
         }
+
+        // output response to external file
+        outputData(logFile, 'Meta-command: do-what-it-says\n');
 
         // based on command, execute appropriate action
         if (error) {
             throw error;
         } else if (fileCommand === "spotify-this-song") {
+
             requestSpotify(fileArgument);
+
         } else if (fileCommand === "movie-this") {
+
             requestOMDB(fileArgument);
+
         } else if (fileCommand === "my-tweets") {
+
             requestTwitter();
+
         } else if (fileCommand === "do-what-it-says") {
+
             console.log("Too deep!");
+
+            var logMeta = 
+                'Command: do-what-it-says\n' +
+                'Response: Too deep!\n' +
+                '\n--------------------------------------\n\n';
+            outputData(logFile, logMeta);
+            console.log('---------------\nlog.txt updated!\n---------------\n');
+
         } else {
+
             console.log("Sorry, command not found");
+
+            var logNotFound = 
+                `Command: ${fileCommand}\n` +
+                `Response: Sorry, command not found\n` +
+                `\n--------------------------------------\n\n`;
+            outputData(logFile, logNotFound);
+            console.log('---------------\nlog.txt updated!\n---------------\n');
+
         }
         // executeCommands(fileCommand, fileArgument);
     });
 
+}
+
+function outputData(file, content) {
+    fs.appendFile(file, content, function(err) {
+        if (err) throw err;
+    });
 }
 
 function executeCommands(command, argument) {
@@ -199,7 +296,7 @@ function executeCommands(command, argument) {
         } else if (command === "do-what-it-says") {
 
             // use file content to execute appropriate command
-            readFile('./random.txt');
+            metaCommand(commandFile);
 
         }
 
@@ -213,35 +310,3 @@ function executeCommands(command, argument) {
 // MAIN PROCESS
 // ====================================================================================
 executeCommands(userCommand, process.argv[3]);
-
-// // conditions to validate command and execute appropriate actions
-// // if the user's argument is an actionable command
-// if (commandArray.includes(userCommand)) {
-
-//     // if Twitter command
-//     if (userCommand === "my-tweets") {
-
-//         requestTwitter();
-
-//     // if Spotify command    
-//     } else if (userCommand === "spotify-this-song") {
-
-//         requestSpotify(process.argv[3]);
-
-//     // if OMDB command
-//     } else if (userCommand === "movie-this") {
-
-//         requestOMDB(process.argv[3]);
-
-//     // if File System command
-//     } else if (userCommand === "do-what-it-says") {
-
-//         // use file content to execute appropriate command
-//         readFile('./random.txt');
-
-//     }
-
-// // if user's argument is not an actionable command
-// } else {
-//     console.log("Command not found ):");
-// }

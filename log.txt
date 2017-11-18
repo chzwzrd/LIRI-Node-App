@@ -1,0 +1,99 @@
+Command: my-tweets
+Response:
+	@bootcamp_wz tweeted: tweet 20 on Wed Nov 15 07:40:17 +0000 2017
+	@bootcamp_wz tweeted: tweet 19 on Wed Nov 15 07:40:14 +0000 2017
+	@bootcamp_wz tweeted: tweet 18 on Wed Nov 15 07:40:12 +0000 2017
+	@bootcamp_wz tweeted: tweet 17 on Wed Nov 15 07:40:08 +0000 2017
+	@bootcamp_wz tweeted: tweet 16 on Wed Nov 15 07:40:06 +0000 2017
+	@bootcamp_wz tweeted: tweet 15 on Wed Nov 15 07:40:03 +0000 2017
+	@bootcamp_wz tweeted: tweet 14 on Wed Nov 15 07:40:00 +0000 2017
+	@bootcamp_wz tweeted: tweet 13 on Wed Nov 15 07:39:57 +0000 2017
+	@bootcamp_wz tweeted: tweet 12 on Wed Nov 15 07:39:55 +0000 2017
+	@bootcamp_wz tweeted: tweet 11 on Wed Nov 15 07:39:53 +0000 2017
+	@bootcamp_wz tweeted: tweet 10 on Wed Nov 15 07:39:50 +0000 2017
+	@bootcamp_wz tweeted: tweet 9 on Wed Nov 15 07:39:47 +0000 2017
+	@bootcamp_wz tweeted: tweet 8 on Wed Nov 15 07:39:45 +0000 2017
+	@bootcamp_wz tweeted: tweet 7 on Wed Nov 15 07:39:26 +0000 2017
+	@bootcamp_wz tweeted: tweet 6 on Wed Nov 15 07:39:23 +0000 2017
+	@bootcamp_wz tweeted: tweet 5 on Wed Nov 15 07:39:21 +0000 2017
+	@bootcamp_wz tweeted: tweet 4 on Wed Nov 15 07:39:17 +0000 2017
+	@bootcamp_wz tweeted: tweet 3 on Wed Nov 15 07:39:15 +0000 2017
+	@bootcamp_wz tweeted: tweet 2 on Wed Nov 15 07:39:12 +0000 2017
+	@bootcamp_wz tweeted: tweet 1 on Wed Nov 15 07:39:05 +0000 2017
+
+--------------------------------------
+
+Command: spotify-this-song
+Query: undefined
+Response:
+	Song: The Sign
+	Artist: Ace of Base
+	Album: The Sign (US Album) [Remastered]
+	Preview link: https://p.scdn.co/mp3-preview/4c463359f67dd3546db7294d236dd0ae991882ff?cid=8c5082e296ee4517b7db65779a52268d
+
+--------------------------------------
+
+Command: spotify-this-song
+Query: fly me to the moon
+Response:
+	Song: Fly Me To The Moon
+	Artist: Frank Sinatra
+	Album: Sinatra/Basie: The Complete Reprise Studio Recordings
+	Preview link: null
+
+--------------------------------------
+
+Command: movie-this
+Query: undefined
+Response:
+	Title: Mr. Nobody
+	Year: 2009
+	Rated: R
+	IMDB Rating: 7.9/10
+	Rotten Tomatoes Rating: 66%
+	Countries of Production: Belgium, Germany, Canada, France, USA, UK
+	Language: English, Mohawk
+	Plot: A boy stands on a station platform as a train is about to leave. Should he go with his mother or stay with his father? Infinite possibilities arise from this decision. As long as he doesn't choose, anything is possible.
+	Actors: Jared Leto, Sarah Polley, Diane Kruger, Linh Dan Pham
+
+--------------------------------------
+
+
+Command: movie-this
+Query: raw
+Response:
+	Title: Raw
+	Year: 2016
+	Rated: R
+	IMDB Rating: 7.0/10
+	Rotten Tomatoes Rating: 90%
+	Countries of Production: France, Belgium, Italy
+	Language: French
+	Plot: When a young vegetarian undergoes a carnivorous hazing ritual at vet school, an unbidden taste for meat begins to grow in her.
+	Actors: Garance Marillier, Ella Rumpf, Rabah Nait Oufella, Laurent Lucas
+
+--------------------------------------
+
+Meta-command: do-what-it-says
+Command: spotify-this-song
+Query: undefined
+Response:
+	Song: Life Is Simple in the Moonlight
+	Artist: The Strokes
+	Album: Angles
+	Preview link: https://p.scdn.co/mp3-preview/013252769cece1810dc6c1340717fa898dc2d1d6?cid=8c5082e296ee4517b7db65779a52268d
+
+--------------------------------------
+
+Meta-command: do-what-it-says
+Command: do-what-it-says
+Response: Too deep!
+
+--------------------------------------
+
+Meta-command: do-what-it-says
+Command: asfwea
+Response: Sorry, command not found
+
+--------------------------------------
+
