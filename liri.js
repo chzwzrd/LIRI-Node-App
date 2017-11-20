@@ -6,6 +6,7 @@ var Spotify = require('node-spotify-api');
 var axios = require('axios');
 var fs = require('fs');
 // var prependFile = require('prepend-file');
+// var inquirer = require('inquirer');
 
 // get access to API keys for Twitter & Spotify stored in keys.js
 var allKeys = require('./keys');
@@ -274,39 +275,60 @@ function outputData(file, content) {
 
 function executeCommands(command, argument) {
     // conditions to validate command and execute appropriate actions
-    // if the user's argument is an actionable command
-    if (commandArray.includes(command)) {
+    // if user does not provide a command
+    if (!command) {
 
-        // if Twitter command
-        if (command === "my-tweets") {
+        console.log('Please type a command\n');
 
-            requestTwitter();
-
-        // if Spotify command    
-        } else if (command === "spotify-this-song") {
-
-            requestSpotify(argument);
-
-        // if OMDB command
-        } else if (command === "movie-this") {
-
-            requestOMDB(argument);
-
-        // if File System command
-        } else if (command === "do-what-it-says") {
-
-            // use file content to execute appropriate command
-            metaCommand(commandFile);
-
-        }
-
-    // if user's argument is not an actionable command
     } else {
-        console.log("Command not found ):");
+
+        // if the user's argument is an actionable command
+        if (commandArray.includes(command)) {
+
+            // if Twitter command
+            if (command === "my-tweets") {
+
+                requestTwitter();
+
+                // if Spotify command    
+            } else if (command === "spotify-this-song") {
+
+                requestSpotify(argument);
+
+                // if OMDB command
+            } else if (command === "movie-this") {
+
+                requestOMDB(argument);
+
+                // if File System command
+            } else if (command === "do-what-it-says") {
+
+                // use file content to execute appropriate command
+                metaCommand(commandFile);
+
+            }
+
+            // if user's argument is not an actionable command
+        } else {
+            console.log("Command not found ):\n");
+        }
     }
 }
 
 
 // MAIN PROCESS
 // ====================================================================================
-executeCommands(userCommand, process.argv[3]);
+// inquirer.prompt([
+//     {
+//         type: 'input',
+//         name: 'instructions',
+//         message: 'Please enter: node liri [command] ["query in quotes"]'
+//     }
+// ]).then(response => {
+//     var responseArr = response.instructions.split(' ');
+//     var userCommand = responseArr[2];
+//     var userArgument = responseArr[3];
+//     executeCommands(userCommand, userArgument);
+//     // console.log(command.instructions.split(' ')[3]);
+// });
+executeCommands(userCommand, userArgument);
