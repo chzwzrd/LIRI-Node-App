@@ -31,11 +31,22 @@ var commandArray = [
     'do-what-it-says'
 ];
 
-// store user's command argument into variable
-var userCommand = process.argv[2];
-var userArgument = process.argv[3];
+// store files into variable
 var commandFile = './random.txt';
 var logFile = './log.txt';
+
+// store user's command into variable
+var userCommand = process.argv[2];
+
+// store user's entire argument into variable
+var args = process.argv;
+var userArgument = "";
+for (var i = 3; i < args.length; i++) {
+    userArgument += (" " + args[i]);
+}
+if (userArgument) {
+    console.log(`User query: ${userArgument}`);
+}
 
 
 // FUNCTIONS
