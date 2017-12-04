@@ -42,7 +42,7 @@ var userCommand = process.argv[2];
 var args = process.argv;
 var userArgument = "";
 for (var i = 3; i < args.length; i++) {
-    userArgument += (" " + args[i]);
+    userArgument += ` ${args[i]}`;
 }
 if (userArgument) {
     console.log(`User query: ${userArgument}`);
@@ -98,6 +98,7 @@ function querySpotify(q) {
         logSpotify(data);
 
     });
+
 }
 
 function requestSpotify(arg) {
@@ -119,11 +120,12 @@ function requestSpotify(arg) {
 function logSpotify(dataObject) {
 
     // create array to push all song info to
+    var spotifyData = dataObject.tracks.items[0];
     var spotifyArr = [
-        "\tSong: " + dataObject.tracks.items[0].name,
-        "\tArtist: " + dataObject.tracks.items[0].artists[0].name,
-        "\tAlbum: " + dataObject.tracks.items[0].album.name,
-        "\tPreview link: " + dataObject.tracks.items[0].preview_url
+        `\tSong: ${spotifyData.name}`,
+        `\tArtist: ${spotifyData.artists[0].name}`,
+        `\tAlbum: ${spotifyData.album.name}`,
+        `\tPreview link: ${spotifyData.preview_url}`
     ];
 
     // join array by newline & log out
@@ -178,16 +180,17 @@ function requestOMDB(arg) {
 
 function logOMDB(responseObject) {
     // create array to push all song info to
+    var omdbData = responseObject.data;
     var omdbArr = [
-        "\tTitle: " + responseObject.data.Title,
-        "\tYear: " + responseObject.data.Year,
-        "\tRated: " + responseObject.data.Rated,
-        "\tIMDB Rating: " + responseObject.data.Ratings[0].Value,
-        "\tRotten Tomatoes Rating: " + responseObject.data.Ratings[1].Value,
-        "\tCountries of Production: " + responseObject.data.Country,
-        "\tLanguage: " + responseObject.data.Language,
-        "\tPlot: " + responseObject.data.Plot,
-        "\tActors: " + responseObject.data.Actors
+        `\tTitle: ${omdbData.Title}`,
+        `\tYear: ${omdbData.Year}`,
+        `\tRated: ${omdbData.Rated}`,
+        `\tIMDB Rating: ${omdbData.Ratings[0].Value}`,
+        `\tRotten Tomatoes Rating: ${omdbData.Ratings[1].Value}`,
+        `\tCountries of Production: ${omdbData.Country}`,
+        `\tLanguage: ${omdbData.Language}`,
+        `\tPlot: ${omdbData.Plot}`,
+        `\tActors: ${omdbData.Actors}`
     ];
 
     // join array by newline & log out
